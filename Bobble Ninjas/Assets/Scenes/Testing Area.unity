@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.11884698, g: 0.18339385, b: 0.3297491, a: 1}
+  m_IndirectSpecularColor: {r: 0.11884108, g: 0.18339348, b: 0.32976314, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -577,8 +577,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fadde489d4b6f30459c859f44a554a39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 40
+  walkSpeed: 40
+  sprintSpeed: 150
+  currentMoveSpeed: 5
   dashPower: 40
+  dashCooldown: 1
+  dashStamina: 20
+  stamina: 100
+  maxStamina: 100
+  staminaRegenPeriod: 0.2
 --- !u!54 &1443900478
 Rigidbody:
   m_ObjectHideFlags: 0
