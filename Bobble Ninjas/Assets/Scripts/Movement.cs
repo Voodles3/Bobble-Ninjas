@@ -13,20 +13,26 @@ public class Movement : MonoBehaviour
     float horizInput;
     float vertInput;
 
-    [Header("Movement")]
+
+    [Header("-=-Movement-=-")]
     public float walkSpeed = 5f;
     public float sprintSpeed = 5f;
     public float currentMoveSpeed = 5f;
 
-    [Header("Dashing")]
+    [Header("-=-Dashing-=-")]
     public float dashPower = 5f;
     public float dashCooldown = 5f;
-    public float dashStamina = 20f;
+    public int dashStamina = 30;
 
-    public float stamina = 100f;
-    public float maxStamina = 100f;
-    public float staminaRegenPeriod = 0.2f;
+    [Header("-=-Stamina-=-")]
+    public int stamina = 100;
+    public int maxStamina = 100;
+    public float staminaRegenFreq = 0.2f;
+    public float staminaRegenDelay = 0.5f;
+    float staminaRegenPeriod = 0f;
+    bool canRegenStamina = true;
     float period = 0f;
+
 
     bool moving = false;
     bool dashing = false;
@@ -71,12 +77,24 @@ public class Movement : MonoBehaviour
 
     void RegenStamina()
     {
-        if (period > staminaRegenPeriod)
+        //Regenerate Stamina
+        if (period >= staminaRegenFreq && canRegenStamina)
         {
+            period = 0f;
             if (stamina < maxStamina) stamina++;
-            period = 0;
         }
         period += Time.deltaTime;
+
+        //Stamina Regeneration Delay
+        if (!canRegenStamina)
+        {
+            staminaRegenPeriod += Time.deltaTime;
+
+            if (staminaRegenPeriod >= staminaRegenDelay)
+            {
+                canRegenStamina = true;
+            }
+        }
     }
 
     void CheckSprint()
@@ -120,12 +138,24 @@ public class Movement : MonoBehaviour
             canDash = false;
             Invoke(nameof(ResetDash), dashCooldown);
             stamina -= dashStamina;
+            PauseStaminaRegen();
         }
+    }
+
+    void PauseStaminaRegen()
+    {
+        staminaRegenPeriod = 0f;
+        canRegenStamina = false;
     }
 
     void ResetDash()
     {
         canDash = true;
+    }
+
+    void ResetStamina()
+    {
+        canRegenStamina = true;
     }
 
 }
