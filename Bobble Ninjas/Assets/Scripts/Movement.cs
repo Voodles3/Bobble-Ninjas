@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.ComponentModel;
 using System.IO;
 using System.Collections;
@@ -17,6 +18,7 @@ public class Movement : MonoBehaviour
     [Header("-=-Movement-=-")]
     public float walkSpeed = 5f;
     public float sprintSpeed = 5f;
+    public float blockSpeed = 5f;
     public float currentMoveSpeed = 5f;
 
     [Header("-=-Dashing-=-")]
@@ -25,18 +27,32 @@ public class Movement : MonoBehaviour
     public int dashStamina = 30;
 
     [Header("-=-Stamina-=-")]
-    public int stamina = 100;
+    public float stamina = 100;
     public int maxStamina = 100;
     public float staminaRegenFreq = 0.2f;
     public float staminaRegenDelay = 0.5f;
+
+    [Header("-=-Sprinting-=-")]
+    public float sprintStaminaDrainFreq = 0.5f;
+    public float sprintStaminaCost = 1f;
+
+    float sprint;
     float staminaRegenPeriod = 0f;
-    bool canRegenStamina = true;
     float period = 0f;
+    float lastCheck = 0f;
 
 
     bool moving = false;
+    bool sprinting = false;
     bool dashing = false;
-    bool canDash = true;
+    bool dashAvailable = true;
+    bool dashEnabled = true;
+    bool staminaRegenEnabled = true;
+    bool sprintEnabled = true;
+    bool blocking = false;
+
+
+    bool infiniteStamina = false;
 
     void Start()
     {
@@ -48,8 +64,11 @@ public class Movement : MonoBehaviour
     {
         CheckMovePlayer();
         CheckDash();
-        CheckSprint();
+        Sprint();
         RegenStamina();
+        StaminaDrain();
+        DebugKeys();
+        Blocking();
     }
 
     void FixedUpdate()
@@ -78,7 +97,7 @@ public class Movement : MonoBehaviour
     void RegenStamina()
     {
         //Regenerate Stamina
-        if (period >= staminaRegenFreq && canRegenStamina)
+        if (period >= staminaRegenFreq && staminaRegenEnabled)
         {
             period = 0f;
             if (stamina < maxStamina) stamina++;
@@ -86,26 +105,38 @@ public class Movement : MonoBehaviour
         period += Time.deltaTime;
 
         //Stamina Regeneration Delay
-        if (!canRegenStamina)
+        if (!staminaRegenEnabled)
         {
             staminaRegenPeriod += Time.deltaTime;
 
             if (staminaRegenPeriod >= staminaRegenDelay)
             {
-                canRegenStamina = true;
+                staminaRegenEnabled = true;
             }
         }
     }
 
-    void CheckSprint()
+    void StaminaDrain()
     {
-        if (Input.GetKey(KeyCode.LeftControl))
+        if (sprinting && (Time.time - lastCheck) >= sprintStaminaDrainFreq)
+        {
+            stamina -= sprintStaminaCost;
+            lastCheck = Time.time;
+        }
+    }
+
+    void Sprint()
+    {
+        if (Input.GetKey(KeyCode.LeftControl) && moving && stamina > 0f && sprintEnabled)
         {
             currentMoveSpeed = sprintSpeed;
+            sprinting = true;
+            PauseStaminaRegen();
         }
         else
         {
             currentMoveSpeed = walkSpeed;
+            sprinting = false;
         }
     }
 
@@ -132,30 +163,60 @@ public class Movement : MonoBehaviour
         vertInput = Input.GetAxisRaw("Vertical");
         direction = new Vector3(horizInput, 0f, vertInput).normalized;
 
-        if (Input.GetKeyDown(KeyCode.Space) && direction.magnitude >= 0.01f && canDash && stamina >= dashStamina)
+        if (Input.GetKeyDown(KeyCode.Space) && direction.magnitude >= 0.01f && stamina >= dashStamina && dashAvailable && dashEnabled)
         {
             dashing = true;
-            canDash = false;
+            dashAvailable = false;
             Invoke(nameof(ResetDash), dashCooldown);
             stamina -= dashStamina;
             PauseStaminaRegen();
         }
     }
 
+    void Blocking()
+    {
+        if (Input.GetKey(KeyCode.Mouse1))
+        {
+            blocking = true;
+            sprintEnabled = false;
+            dashEnabled = false;
+            currentMoveSpeed = blockSpeed;
+        }
+        else
+        {
+            blocking = false;
+            sprintEnabled = true;
+            dashEnabled = true;
+        }
+    }
+
+    void DebugKeys()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            infiniteStamina = !infiniteStamina;
+        }
+        if (infiniteStamina)
+        {
+            stamina = 100f;
+        }
+    }
+
     void PauseStaminaRegen()
     {
         staminaRegenPeriod = 0f;
-        canRegenStamina = false;
+        staminaRegenEnabled = false;
     }
 
     void ResetDash()
     {
-        canDash = true;
+        dashAvailable = true;
     }
 
     void ResetStamina()
     {
-        canRegenStamina = true;
+        staminaRegenEnabled = true;
     }
+
 
 }
