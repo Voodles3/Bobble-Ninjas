@@ -62,8 +62,7 @@ public class Movement : MonoBehaviour
 
     void Update()
     {
-        CheckMovePlayer();
-        CheckDash();
+        CalculateMovementDirection();
         Sprint();
         RegenStamina();
         StaminaDrain();
@@ -92,6 +91,16 @@ public class Movement : MonoBehaviour
             rb.AddRelativeForce(direction * dashPower * Time.deltaTime, ForceMode.Impulse);
             dashing = false;
         }
+    }
+
+    void CalculateMovementDirection()
+    {
+        horizInput = Input.GetAxisRaw("Horizontal");
+        vertInput = Input.GetAxisRaw("Vertical");
+        direction = new Vector3(horizInput, 0f, vertInput).normalized;
+
+        CheckMovePlayer(direction);
+        CheckDash(direction);
     }
 
     void RegenStamina()
@@ -140,13 +149,9 @@ public class Movement : MonoBehaviour
         }
     }
 
-    void CheckMovePlayer()
+    void CheckMovePlayer(Vector3 direction)
     {
-        horizInput = Input.GetAxisRaw("Horizontal");
-        vertInput = Input.GetAxisRaw("Vertical");
-        direction = new Vector3(horizInput, 0f, vertInput).normalized;
-
-        if(direction.magnitude >= 0.01f)
+        if (direction.magnitude >= 0.01f)
         {
             moving = true;
             
@@ -157,12 +162,8 @@ public class Movement : MonoBehaviour
         }
     }
 
-    void CheckDash()
+    void CheckDash(Vector3 direction)
     {
-        horizInput = Input.GetAxisRaw("Horizontal");
-        vertInput = Input.GetAxisRaw("Vertical");
-        direction = new Vector3(horizInput, 0f, vertInput).normalized;
-
         if (Input.GetKeyDown(KeyCode.Space) && direction.magnitude >= 0.01f && stamina >= dashStamina && dashAvailable && dashEnabled)
         {
             dashing = true;
