@@ -1,0 +1,32 @@
+.menu-button {
+    font-size: 45px;
+    width: 100%;
+    height: 17%;
+    background-color: rgba(0, 0, 0, 0);
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+    color: rgb(152, 152, 152);
+    -unity-font-definition: url('project://database/Assets/Fonts/njnaruto%20SDF.asset?fileID=11400000&guid=be4dcc01a08585a4e8ea5838167bbfdb&type=2#njnaruto SDF');
+    -unity-font-style: normal;
+    -unity-text-align: upper-center;
+    -unity-text-outline-color: rgb(0, 0, 0);
+    -unity-text-outline-width: 0;
+    text-shadow: 3px 4px 0 rgb(0, 0, 0);
+    transition-duration: 0.1s;
+    justify-content: flex-start;
+    margin-top: 8px;
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+
+.menu-button:hover {
+    font-size: 55px;
+    color: rgb(120, 1, 0);
+    transition-duration: 0.1s;
+    transition-delay: 0s;
+    transition-timing-function: ease;
+    rotate: -3deg;
+}
