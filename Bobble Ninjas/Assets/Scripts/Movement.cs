@@ -9,8 +9,9 @@ public class Movement : MonoBehaviour
 {
     Rigidbody rb;
     Vector3 direction;
-
+    
     public GameObject bobbleninja;
+
     float horizInput;
     float vertInput;
 
