@@ -10,10 +10,12 @@ public class Movement : MonoBehaviour
     Rigidbody rb;
     Vector3 direction;
 
-
+    public GameObject bobbleninja;
     float horizInput;
     float vertInput;
 
+    Animator animator;
+    int isWalkingHash;
 
     [Header("-=-Movement-=-")]
     public float walkSpeed = 5f;
@@ -58,6 +60,9 @@ public class Movement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         stamina = maxStamina;
+
+        animator = bobbleninja.GetComponent<Animator>();
+        isWalkingHash = Animator.StringToHash("isWalk");
     }
 
     void Update()
@@ -81,6 +86,11 @@ public class Movement : MonoBehaviour
         if (moving)
         {
             rb.AddRelativeForce(direction * currentMoveSpeed * Time.deltaTime);
+            animator.SetBool(isWalkingHash, true);
+        }
+        else
+        {
+            animator.SetBool(isWalkingHash, false);
         }
     }
 
