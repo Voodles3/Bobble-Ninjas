@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.ComponentModel;
 using System.IO;
@@ -9,7 +10,10 @@ public class Movement : MonoBehaviour
 {
     Rigidbody rb;
     Vector3 direction;
-    
+    Vector3 rollDirection;
+
+    public Transform playerBodyTransform;
+    public GameObject playerBody;
     public GameObject bobbleninja;
 
     float horizInput;
@@ -17,6 +21,7 @@ public class Movement : MonoBehaviour
 
     Animator animator;
     int isWalkingHash;
+    int isRollingHash;
 
     [Header("-=-Movement-=-")]
     public float walkSpeed = 5f;
@@ -29,6 +34,12 @@ public class Movement : MonoBehaviour
     public float dashCooldown = 5f;
     public int dashStamina = 30;
 
+    [Header("-=-Rolling-=-")]
+    public float rollPower = 5f;
+    public float rollDuration = 5f;
+    public float rollCooldown = 5f;
+    public int rollStamina = 20;
+
     [Header("-=-Stamina-=-")]
     public float stamina = 100;
     public int maxStamina = 100;
@@ -38,14 +49,17 @@ public class Movement : MonoBehaviour
     [Header("-=-Sprinting-=-")]
     public float sprintStaminaDrainFreq = 0.5f;
     public float sprintStaminaCost = 1f;
+    public float sprintAnimationSpeed = 1.5f;
 
     float sprint;
     float staminaRegenPeriod = 0f;
+    float rollPeriod = 0f;
     float period = 0f;
     float lastCheck = 0f;
 
 
     bool moving = false;
+    bool moveEnabled = true;
     bool sprinting = false;
     bool dashing = false;
     bool dashAvailable = true;
@@ -53,6 +67,8 @@ public class Movement : MonoBehaviour
     bool staminaRegenEnabled = true;
     bool sprintEnabled = true;
     bool blocking = false;
+    bool rolling = false;
+    bool rollAvailable = true;
 
 
     bool infiniteStamina = false;
@@ -63,7 +79,8 @@ public class Movement : MonoBehaviour
         stamina = maxStamina;
 
         animator = bobbleninja.GetComponent<Animator>();
-        isWalkingHash = Animator.StringToHash("isWalk");
+        isWalkingHash = Animator.StringToHash("isWalking");
+        isRollingHash = Animator.StringToHash("isRolling");
     }
 
     void Update()
@@ -71,15 +88,73 @@ public class Movement : MonoBehaviour
         CalculateMovementDirection();
         Sprint();
         RegenStamina();
-        StaminaDrain();
+        DrainStaminaWhileSprinting();
         DebugKeys();
-        Blocking();
+        Block();
     }
 
     void FixedUpdate()
     {
         MovePlayer();
         Dash();
+        Roll();
+    }
+
+    void CalculateMovementDirection()
+    {
+        horizInput = Input.GetAxisRaw("Horizontal");
+        vertInput = Input.GetAxisRaw("Vertical");
+        direction = new Vector3(horizInput, 0f, vertInput).normalized;
+
+        CheckMovePlayer(direction);
+        CheckDash(direction);
+        CheckRoll();
+    }
+
+    void CheckMovePlayer(Vector3 direction)
+    {
+        if (moveEnabled && direction.magnitude >= 0.01f)
+        {
+            moving = true;
+            
+        }
+        else
+        {
+            moving = false;
+        }
+    }
+
+    void CheckDash(Vector3 direction)
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && direction.magnitude >= 0.01f && stamina >= dashStamina && dashAvailable && dashEnabled)
+        {
+            dashing = true;
+            dashAvailable = false;
+            
+            Invoke(nameof(ResetDash), dashCooldown);
+
+            stamina -= dashStamina;
+            PauseStaminaRegen();
+        }
+    }
+
+    void CheckRoll()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift) && direction.magnitude >= 0.01f && stamina >= rollStamina && rollAvailable)
+        {
+            moveEnabled = false;
+            sprintEnabled = false;
+            dashEnabled = false;
+
+            rolling = true;
+            rollAvailable = false;
+
+            rollDirection = direction;
+            Invoke(nameof(ResetRoll), rollCooldown);
+
+            stamina -= rollStamina;
+            PauseStaminaRegen();
+        }
     }
 
     void MovePlayer()
@@ -99,19 +174,72 @@ public class Movement : MonoBehaviour
     {
         if (dashing)
         {
+            rb.velocity = Vector3.zero;
             rb.AddRelativeForce(direction * dashPower * Time.deltaTime, ForceMode.Impulse);
             dashing = false;
         }
     }
 
-    void CalculateMovementDirection()
+    void Roll()
     {
-        horizInput = Input.GetAxisRaw("Horizontal");
-        vertInput = Input.GetAxisRaw("Vertical");
-        direction = new Vector3(horizInput, 0f, vertInput).normalized;
+        if (rolling && rollPeriod < rollDuration)
+        {
+            rb.velocity = Vector3.zero;
+            animator.SetBool(isRollingHash, true);
+            playerBody.GetComponent<PlayerLookAtMouse>().enabled = false;
 
-        CheckMovePlayer(direction);
-        CheckDash(direction);
+            playerBodyTransform.rotation = Quaternion.Slerp(playerBodyTransform.rotation, Quaternion.LookRotation(rollDirection), 0.2f);
+
+            rb.AddRelativeForce(rollDirection * rollPower * Time.deltaTime, ForceMode.Force);
+
+            rollPeriod += Time.deltaTime;
+
+            Invoke(nameof(DoneRolling), (rollDuration));
+        }
+    }
+
+    void DoneRolling()
+    {
+        sprintEnabled = true;
+        moveEnabled = true;
+        rollPeriod = 0f;
+        rolling = false;
+        animator.SetBool(isRollingHash, false);
+        Invoke(nameof(EnableLookScript), 0.05f);
+    }
+
+    void Sprint()
+    {
+        if (Input.GetKey(KeyCode.LeftControl) && moving && stamina > 0f && sprintEnabled)
+        {
+            currentMoveSpeed = sprintSpeed;
+            sprinting = true;
+            PauseStaminaRegen();
+            animator.SetFloat("walkAnimSpeed", sprintAnimationSpeed);
+        }
+        else
+        {
+            currentMoveSpeed = walkSpeed;
+            sprinting = false;
+            animator.SetFloat("walkAnimSpeed", 1.0f);
+        }
+    }
+
+    void Block()
+    {
+        if (Input.GetKey(KeyCode.Mouse1))
+        {
+            blocking = true;
+            sprintEnabled = false;
+            dashEnabled = false;
+            currentMoveSpeed = blockSpeed;
+        }
+        else
+        {
+            blocking = false;
+            sprintEnabled = true;
+            dashEnabled = true;
+        }
     }
 
     void RegenStamina()
@@ -136,69 +264,12 @@ public class Movement : MonoBehaviour
         }
     }
 
-    void StaminaDrain()
+    void DrainStaminaWhileSprinting()
     {
         if (sprinting && (Time.time - lastCheck) >= sprintStaminaDrainFreq)
         {
             stamina -= sprintStaminaCost;
             lastCheck = Time.time;
-        }
-    }
-
-    void Sprint()
-    {
-        if (Input.GetKey(KeyCode.LeftControl) && moving && stamina > 0f && sprintEnabled)
-        {
-            currentMoveSpeed = sprintSpeed;
-            sprinting = true;
-            PauseStaminaRegen();
-        }
-        else
-        {
-            currentMoveSpeed = walkSpeed;
-            sprinting = false;
-        }
-    }
-
-    void CheckMovePlayer(Vector3 direction)
-    {
-        if (direction.magnitude >= 0.01f)
-        {
-            moving = true;
-            
-        }
-        else
-        {
-            moving = false;
-        }
-    }
-
-    void CheckDash(Vector3 direction)
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && direction.magnitude >= 0.01f && stamina >= dashStamina && dashAvailable && dashEnabled)
-        {
-            dashing = true;
-            dashAvailable = false;
-            Invoke(nameof(ResetDash), dashCooldown);
-            stamina -= dashStamina;
-            PauseStaminaRegen();
-        }
-    }
-
-    void Blocking()
-    {
-        if (Input.GetKey(KeyCode.Mouse1))
-        {
-            blocking = true;
-            sprintEnabled = false;
-            dashEnabled = false;
-            currentMoveSpeed = blockSpeed;
-        }
-        else
-        {
-            blocking = false;
-            sprintEnabled = true;
-            dashEnabled = true;
         }
     }
 
@@ -225,9 +296,14 @@ public class Movement : MonoBehaviour
         dashAvailable = true;
     }
 
-    void ResetStamina()
+    void ResetRoll()
     {
-        staminaRegenEnabled = true;
+        rollAvailable = true;
+    }
+
+    void EnableLookScript()
+    {
+        playerBody.GetComponent<PlayerLookAtMouse>().enabled = true;
     }
 
 

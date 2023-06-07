@@ -1,28 +1,13 @@
 ﻿using UnityEngine;
 
-namespace BarthaSzabolcs.IsometricAiming
-{
     public class PlayerLookAtMouse : MonoBehaviour
     {
-        #region Datamembers
-
-        #region Editor Settings
-
         [SerializeField] private LayerMask groundMask;
-
-        #endregion
-        #region Private Fields
 
         private Camera mainCamera;
 
-        #endregion
-
-        #endregion
-
-
-        #region Methods
-
-        #region Unity Callbacks
+        public Vector3 direction;
+        float period = 0f;
 
         private void Start()
         {
@@ -32,25 +17,31 @@ namespace BarthaSzabolcs.IsometricAiming
 
         private void Update()
         {
-            Aim();
+            CallAim();
         }
 
-        #endregion
+        void CallAim()
+        {
+            if (period >= 0.01f)
+            {
+                Aim();
+                period = 0f;
+            }
+            period += Time.deltaTime;
+        }
 
         private void Aim()
         {
             var (success, position) = GetMousePosition();
+            
             if (success)
             {
                 // Calculate the direction
-                var direction = position - transform.position;
+                direction = position - transform.position;
 
-                // You might want to delete this line.
-                // Ignore the height difference.
                 direction.y = 0;
 
-                // Make the transform look in the direction.
-                transform.forward = direction;
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), 0.2f);
             }
         }
 
@@ -69,7 +60,4 @@ namespace BarthaSzabolcs.IsometricAiming
                 return (success: false, position: Vector3.zero);
             }
         }
-
-        #endregion
     }
-}
