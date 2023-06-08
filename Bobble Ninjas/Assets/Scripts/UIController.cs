@@ -16,6 +16,8 @@ public class UIController : MonoBehaviour
     public Button settingsButton;
     public Button exitButton;
 
+    public Button backButton;
+
     void Start()
     {
         mainMenuDoc = mainMenuUIObject.GetComponent<UIDocument>();
@@ -28,7 +30,10 @@ public class UIController : MonoBehaviour
         settingsButton = mainMenuDoc.rootVisualElement.Q<Button>("Settings");
         exitButton = mainMenuDoc.rootVisualElement.Q<Button>("ExitGame");
 
+        backButton = levelSelectDoc.rootVisualElement.Q<Button>("BackButton");
+
         startButton.clicked += StartButtonPressed;
+        backButton.clicked += BackButtonPressed;
     }
     
     void StartButtonPressed()
@@ -45,5 +50,11 @@ public class UIController : MonoBehaviour
     void ExitButtonPressed()
     {
 
+    }
+
+    void BackButtonPressed()
+    {
+        levelSelectDoc.rootVisualElement.style.display = DisplayStyle.None;
+        mainMenuDoc.rootVisualElement.style.display = DisplayStyle.Flex;
     }
 }

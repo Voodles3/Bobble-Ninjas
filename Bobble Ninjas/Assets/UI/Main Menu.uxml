@@ -1,14 +1,14 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/StyleSheets/MainMenu.uss?fileID=7433441132597879392&amp;guid=65dcba81e57b8884dad4c1fe1e98c8de&amp;type=3#MainMenu" />
     <ui:VisualElement name="MainMenu" style="flex-grow: 1; align-items: center; justify-content: flex-start; opacity: 1;">
-        <ui:VisualElement name="MiddleSection" style="width: 55%; visibility: visible; height: 100%; justify-content: flex-start; align-items: center; display: flex; overflow: visible; flex-direction: column; flex-wrap: nowrap; background-color: rgb(100, 0, 0); opacity: 0.65; margin-bottom: 2%; margin-top: 2%; border-top-left-radius: 5%; border-bottom-left-radius: 5%; border-top-right-radius: 5%; border-bottom-right-radius: 5%;">
+        <ui:VisualElement name="MiddleSection" style="width: 55%; visibility: visible; height: 100%; justify-content: flex-start; align-items: center; display: flex; overflow: visible; flex-direction: column; flex-wrap: nowrap; background-color: rgb(100, 0, 0); opacity: 0.75; margin-bottom: 2%; margin-top: 2%; border-top-left-radius: 5%; border-bottom-left-radius: 5%; border-top-right-radius: 5%; border-bottom-right-radius: 5%;">
             <ui:VisualElement name="Title" style="width: 85%; height: 30%; align-items: center; justify-content: center; padding-top: 27px; background-color: rgba(0, 0, 0, 0); flex-grow: 1; flex-shrink: 1; padding-left: 0; padding-right: 0; padding-bottom: 0;">
                 <ui:Label text="Bobble  Ninjas" display-tooltip-when-elided="true" name="Title" style="flex-grow: 1; flex-shrink: 0; width: 100%; height: 50%; -unity-text-align: middle-center; -unity-font-definition: url(&apos;project://database/Assets/Fonts/njnaruto%20SDF.asset?fileID=11400000&amp;guid=be4dcc01a08585a4e8ea5838167bbfdb&amp;type=2#njnaruto SDF&apos;); font-size: 65%; color: rgb(170, 0, 0); -unity-font-style: normal; word-spacing: 0; text-shadow: 3px 3px 0 rgb(0, 0, 0); opacity: 1; align-items: center; -unity-font: none; justify-content: center; background-color: rgba(0, 0, 0, 0); flex-direction: column;" />
             </ui:VisualElement>
             <ui:VisualElement name="Buttons" style="flex-grow: 0; flex-direction: column; width: 50%; height: 100%; align-items: center; justify-content: center; padding-bottom: 0;">
                 <ui:Button text="Start" display-tooltip-when-elided="true" name="StartGame" class="menu-button" style="width: 54%; height: 14%;" />
                 <ui:Button text="Settings" display-tooltip-when-elided="true" name="Settings" class="menu-button" style="width: 87%; height: 14%;" />
-                <ui:Button text="Exit" display-tooltip-when-elided="true" name="ExitGame" enable-rich-text="false" class="menu-button" style="width: 40%; height: 14%;" />
+                <ui:Button text="Exit" display-tooltip-when-elided="true" name="ExitGame" enable-rich-text="false" class="menu-button" style="width: 42%; height: 14%;" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
