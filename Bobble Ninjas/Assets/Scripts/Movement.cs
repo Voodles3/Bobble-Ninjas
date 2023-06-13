@@ -116,7 +116,6 @@ public class Movement : MonoBehaviour
         if (moveEnabled && direction.magnitude >= 0.01f)
         {
             moving = true;
-            
         }
         else
         {

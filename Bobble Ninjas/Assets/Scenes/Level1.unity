@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: cdbb40e11399e4a17882ada20a1b896a, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 80fe05667390d9542950ac5e6bbb9132, type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -1105,14 +1105,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1190694082}
     m_Modifications:
+    - target: {fileID: 2913538427581387493, guid: a3a0621d254a66141803d9125983f295, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5109855730298258158, guid: a3a0621d254a66141803d9125983f295, type: 3}
       propertyPath: m_Name
       value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 5109855730298258160, guid: a3a0621d254a66141803d9125983f295, type: 3}
+      propertyPath: m_AgentTypeID
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5109855730298258160, guid: a3a0621d254a66141803d9125983f295, type: 3}
+      propertyPath: m_AutoBraking
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5109855730298258161, guid: a3a0621d254a66141803d9125983f295, type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 1339758669}
+    - target: {fileID: 5109855730298258161, guid: a3a0621d254a66141803d9125983f295, type: 3}
+      propertyPath: distancePeriod
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 5109855730298258163, guid: a3a0621d254a66141803d9125983f295, type: 3}
       propertyPath: m_RootOrder
       value: 0
