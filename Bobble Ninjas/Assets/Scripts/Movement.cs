@@ -29,6 +29,11 @@ public class Movement : MonoBehaviour
     public float blockSpeed = 5f;
     public float currentMoveSpeed = 5f;
 
+    [Header("-=-Sprinting-=-")]
+    public float sprintStaminaDrainFreq = 0.5f;
+    public float sprintStaminaCost = 1f;
+    public float sprintAnimationSpeed = 1.5f;
+
     [Header("-=-Dashing-=-")]
     public float dashPower = 5f;
     public float dashCooldown = 5f;
@@ -40,16 +45,15 @@ public class Movement : MonoBehaviour
     public float rollCooldown = 5f;
     public int rollStamina = 20;
 
+    [Header("Blocking")]
+    public float blockAnimationSpeed = 0.5f;
+
     [Header("-=-Stamina-=-")]
     public float stamina = 100;
     public int maxStamina = 100;
     public float staminaRegenFreq = 0.2f;
     public float staminaRegenDelay = 0.5f;
 
-    [Header("-=-Sprinting-=-")]
-    public float sprintStaminaDrainFreq = 0.5f;
-    public float sprintStaminaCost = 1f;
-    public float sprintAnimationSpeed = 1.5f;
 
     float sprint;
     float staminaRegenPeriod = 0f;
@@ -90,7 +94,7 @@ public class Movement : MonoBehaviour
         RegenStamina();
         DrainStaminaWhileSprinting();
         DebugKeys();
-        Block();
+        CheckBlock();
     }
 
     void FixedUpdate()
@@ -98,6 +102,7 @@ public class Movement : MonoBehaviour
         MovePlayer();
         Dash();
         Roll();
+        Block();
     }
 
     void CalculateMovementDirection()
@@ -153,6 +158,24 @@ public class Movement : MonoBehaviour
 
             stamina -= rollStamina;
             PauseStaminaRegen();
+        }
+    }
+
+    void CheckBlock()
+    {
+        if (Input.GetKey(KeyCode.Mouse1))
+        {
+            blocking = true;
+            sprintEnabled = false;
+            dashEnabled = false;
+            currentMoveSpeed = blockSpeed;
+            animator.SetFloat("walkAnimSpeed", blockAnimationSpeed);
+        }
+        else
+        {
+            blocking = false;
+            sprintEnabled = true;
+            dashEnabled = true;
         }
     }
 
@@ -226,18 +249,9 @@ public class Movement : MonoBehaviour
 
     void Block()
     {
-        if (Input.GetKey(KeyCode.Mouse1))
+        if (blocking)
         {
-            blocking = true;
-            sprintEnabled = false;
-            dashEnabled = false;
-            currentMoveSpeed = blockSpeed;
-        }
-        else
-        {
-            blocking = false;
-            sprintEnabled = true;
-            dashEnabled = true;
+
         }
     }
 
