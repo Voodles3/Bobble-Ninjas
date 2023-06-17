@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3103442994420853930}
   - component: {fileID: 3214195231275009586}
+  - component: {fileID: 2027578337}
   m_Layer: 0
   m_Name: bobbleninjaplayer
   m_TagString: Untagged
@@ -59,6 +60,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &2027578337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2331303684691031568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0d253bf3754bc04f962f75028f2232d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3214195231980627421
 GameObject:
   m_ObjectHideFlags: 0
@@ -358,8 +371,11 @@ MonoBehaviour:
   bobbleninja: {fileID: 2331303684691031568}
   walkSpeed: 35
   sprintSpeed: 75
-  blockSpeed: 5
+  blockSpeed: 15
   currentMoveSpeed: 5
+  sprintStaminaDrainFreq: 0.2
+  sprintStaminaCost: 1
+  sprintAnimationSpeed: 1.5
   dashPower: 40
   dashCooldown: 0.5
   dashStamina: 30
@@ -367,13 +383,11 @@ MonoBehaviour:
   rollDuration: 0.5
   rollCooldown: 1
   rollStamina: 20
+  blockAnimationSpeed: 0.5
   stamina: 100
   maxStamina: 100
   staminaRegenFreq: 0.2
   staminaRegenDelay: 0.75
-  sprintStaminaDrainFreq: 0.2
-  sprintStaminaCost: 1
-  sprintAnimationSpeed: 1.5
 --- !u!1 &3489869778062288822
 GameObject:
   m_ObjectHideFlags: 0
@@ -1149,7 +1163,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9221982828127498039}
-  m_LocalRotation: {x: -0.7071069, y: -0, z: -0, w: 0.70710677}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -2.2, y: 2.79, z: 0}
   m_LocalScale: {x: 24.428349, y: 24.428345, z: 24.428352}
   m_ConstrainProportionsScale: 0
@@ -1157,7 +1171,7 @@ Transform:
   - {fileID: 2837414408977009654}
   m_Father: {fileID: 3103442994420853930}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!33 &6602580699532201620
 MeshFilter:
   m_ObjectHideFlags: 0

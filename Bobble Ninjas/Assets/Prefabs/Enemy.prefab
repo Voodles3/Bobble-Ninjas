@@ -44,7 +44,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2913538427581387490}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: d730af447951bf34c98117fc8d1b1218, type: 2}
   m_CullingMode: 0
@@ -155,7 +155,7 @@ GameObject:
   - component: {fileID: 5109855730298258162}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -211,8 +211,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
+  enemySpeed: 6
+  enemyBackupSpeed: 6
   stoppingDistance: 10
-  distancePeriod: 0.05
+  stopDistances:
+  - 10
+  - 12
+  - 14
+  - 16
+  distanceToPlayer: 0
+  AIStateUpdatePeriod: 0.1
+  currentState: 0
 --- !u!114 &5109855730298258162
 MonoBehaviour:
   m_ObjectHideFlags: 0
