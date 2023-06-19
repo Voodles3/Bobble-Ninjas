@@ -70,7 +70,7 @@ public class Movement : MonoBehaviour
     bool dashEnabled = true;
     bool staminaRegenEnabled = true;
     bool sprintEnabled = true;
-    bool blocking = false;
+    [HideInInspector] public bool blocking = false;
     bool rolling = false;
     bool rollAvailable = true;
 
