@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3103442994420853930}
   - component: {fileID: 3214195231275009586}
   - component: {fileID: 2027578337}
+  - component: {fileID: 2027578338}
   m_Layer: 0
   m_Name: bobbleninjaplayer
   m_TagString: Untagged
@@ -72,6 +73,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0d253bf3754bc04f962f75028f2232d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2027578338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2331303684691031568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a412eb1047d3344b549b05eb838d8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isSwinging: 0
 --- !u!1 &3214195231980627421
 GameObject:
   m_ObjectHideFlags: 0
@@ -388,6 +402,7 @@ MonoBehaviour:
   maxStamina: 100
   staminaRegenFreq: 0.2
   staminaRegenDelay: 0.75
+  blocking: 0
 --- !u!1 &3489869778062288822
 GameObject:
   m_ObjectHideFlags: 0
@@ -650,7 +665,7 @@ GameObject:
   - component: {fileID: 2837414408977009654}
   - component: {fileID: 3540494813513853314}
   - component: {fileID: 1777140024400209688}
-  - component: {fileID: 5251805606862176506}
+  - component: {fileID: 1283767773}
   m_Layer: 0
   m_Name: Sword
   m_TagString: Untagged
@@ -726,20 +741,18 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5251805606862176506
-MeshCollider:
+--- !u!114 &1283767773
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5324129199301746631}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 2534964839176971238, guid: 8f032e2bc39a9d145895ce89cb8fb1cd, type: 3}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18e90b9df3650174393bc3d4d56d033d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6473011904189445841
 GameObject:
   m_ObjectHideFlags: 0
