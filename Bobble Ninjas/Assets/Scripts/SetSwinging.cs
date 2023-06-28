@@ -18,5 +18,4 @@ public class SetSwinging : MonoBehaviour
         isSwinging = false;
     }
 
-    
 }

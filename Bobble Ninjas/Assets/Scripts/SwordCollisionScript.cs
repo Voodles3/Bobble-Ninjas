@@ -9,6 +9,7 @@ public class SwordCollisionScript : MonoBehaviour
 
     void Start()
     {
+        swingScript = GetComponent<SetSwinging>();
     }
 
     // Update is called once per frame
@@ -17,9 +18,11 @@ public class SwordCollisionScript : MonoBehaviour
         
     }
 
-    void OnTriggerEnter(Collider other) {
+    void OnTriggerEnter(Collider other) 
+    {
         if(swingScript.isSwinging) {
             Debug.Log("Collided");
         }
     }
+
 }
