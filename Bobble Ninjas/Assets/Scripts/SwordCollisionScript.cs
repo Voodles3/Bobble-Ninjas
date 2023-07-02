@@ -4,24 +4,31 @@ using UnityEngine;
 
 public class SwordCollisionScript : MonoBehaviour
 {
-    public SetSwinging swingScript;
+    public bool swingScript;
+    public float damage = 1;
     
 
     void Start()
     {
-        swingScript = GetComponent<SetSwinging>();
+        
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        swingScript = FindObjectOfType<SetSwinging>().isSwinging;
     }
 
     void OnTriggerEnter(Collider other) 
     {
-        if(swingScript.isSwinging) {
-            Debug.Log("Collided");
+        //Debug.Log("Can collide");
+        if(swingScript) {
+            //Debug.Log("Collided");
+            DamageScript damageScript = other.GetComponent<DamageScript>();
+            if(damageScript!=null)
+            {
+                damageScript.Damaged(damage);
+            }
         }
     }
 
