@@ -453,7 +453,6 @@ GameObject:
   - component: {fileID: 560150118}
   - component: {fileID: 560150117}
   - component: {fileID: 560150116}
-  - component: {fileID: 560150119}
   m_Layer: 3
   m_Name: Terrain
   m_TagString: Untagged
@@ -521,19 +520,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &560150119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 560150115}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26017cf86c9141a45ac663b47228ebe6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxIterations: 5
 --- !u!1 &847974318 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100002, guid: 89ede9256fbfe8d70b1fdbe58d46b263, type: 3}
@@ -604,18 +590,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 784556942, guid: 03e16e365a73a9946a566a55a095b9f9, type: 3}
-      propertyPath: isSwingRef
-      value: 
-      objectReference: {fileID: 2027578338}
-    - target: {fileID: 784556943, guid: 03e16e365a73a9946a566a55a095b9f9, type: 3}
-      propertyPath: m_Size.x
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 2027578337, guid: 03e16e365a73a9946a566a55a095b9f9, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3214195232762274960, guid: 03e16e365a73a9946a566a55a095b9f9, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -663,10 +637,6 @@ PrefabInstance:
     - target: {fileID: 3214195232762274967, guid: 03e16e365a73a9946a566a55a095b9f9, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 3214195232762274967, guid: 03e16e365a73a9946a566a55a095b9f9, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03e16e365a73a9946a566a55a095b9f9, type: 3}
@@ -1123,17 +1093,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2027578338 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2027578338, guid: 03e16e365a73a9946a566a55a095b9f9, type: 3}
-  m_PrefabInstance: {fileID: 1026996784}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4a412eb1047d3344b549b05eb838d8d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &5109855731406137537
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3103442994420853930}
   - component: {fileID: 3214195231275009586}
   - component: {fileID: 2027578337}
-  - component: {fileID: 2027578338}
   m_Layer: 0
   m_Name: bobbleninjaplayer
   m_TagString: Untagged
@@ -71,18 +70,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b0d253bf3754bc04f962f75028f2232d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2027578338
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2331303684691031568}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4a412eb1047d3344b549b05eb838d8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   isSwinging: 0
@@ -214,7 +201,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.049999997, y: 0.05, z: 0.05606103}
+  m_Size: {x: 0.05, y: 0.05, z: 0.05606103}
   m_Center: {x: 0.000000021452498, y: 0.0015884743, z: 0.0031275095}
 --- !u!114 &784556942
 MonoBehaviour:
@@ -228,7 +215,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18e90b9df3650174393bc3d4d56d033d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  swingScript: {fileID: 2027578338}
+  swingScript: {fileID: 0}
+  damage: 1
 --- !u!1 &3214195232498074883
 GameObject:
   m_ObjectHideFlags: 0

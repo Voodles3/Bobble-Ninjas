@@ -7,6 +7,8 @@ public class PlayerAttackScript : MonoBehaviour
     Animator animator;
     int isAttackHash;
 
+    public bool isSwinging = false;
+
 
     void Start()
     {
@@ -31,4 +33,17 @@ public class PlayerAttackScript : MonoBehaviour
         }
         
     }
+
+    void AllowSwinging()
+    {
+        //Debug.Log("Is Swinging");
+        isSwinging = true;
+    }
+
+    void DisallowSwinging()
+    {
+        //Debug.Log("Is not Swinging");
+        isSwinging = false;
+    }
+
 }

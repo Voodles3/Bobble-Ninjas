@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SwordCollisionScript : MonoBehaviour
 {
-    public SetSwinging swingScript;
+    public PlayerAttackScript swingScript;
     public float damage = 1;
 
     void Start()
@@ -14,7 +14,7 @@ public class SwordCollisionScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        swingScript = FindObjectOfType<SetSwinging>();
+        swingScript = FindObjectOfType<PlayerAttackScript>();
     }
 
     void OnTriggerEnter(Collider other) 
