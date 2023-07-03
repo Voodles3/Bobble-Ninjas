@@ -13,7 +13,6 @@ public class PlayerAttackScript : MonoBehaviour
         animator = GetComponent<Animator>();
         isAttackHash = Animator.StringToHash("isAttack");
     }
-
     
     void Update()
     {
@@ -22,7 +21,7 @@ public class PlayerAttackScript : MonoBehaviour
 
     void Attack()
     {
-        if(Input.GetKey(KeyCode.Mouse0)&&!Input.GetKey(KeyCode.Mouse1))
+        if(Input.GetKeyDown(KeyCode.Mouse0)&&!Input.GetKey(KeyCode.Mouse1))
         {
            animator.SetBool(isAttackHash, true); 
         }
