@@ -3,7 +3,7 @@ using UnityEngine.AI;
 public class EnemyAI : MonoBehaviour
 {
     [Header("References")]
-    public Transform player;
+    public Transform playerTransform;
     NavMeshAgent agent;
 
     [Header("Animations")]
@@ -12,7 +12,7 @@ public class EnemyAI : MonoBehaviour
 
     [Header("Enemy Movement")]
     public float enemySpeed = 6f;
-    public float enemyBackupSpeed = 6f;
+    public float enemyBackingSpeed = 6f;
 
     [Header("Stopping Distances")]
     public float stoppingDistance = 10f;
@@ -35,7 +35,7 @@ public class EnemyAI : MonoBehaviour
         //References
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
-        player = GameObject.Find("Player").transform;
+        playerTransform = GameObject.Find("Player").transform;
 
         //Animations
         isWalkingHash = Animator.StringToHash("isWalking");
@@ -66,10 +66,10 @@ public class EnemyAI : MonoBehaviour
 
     void SetAIState()
     {
-        if (player != null)
+        if (playerTransform != null)
         {
             //Find the distance between the enemy and the player
-            distanceToPlayer = Vector3.Distance(transform.position, player.position);
+            distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
 
             //Set enemy AI state based on enemy's distance from the player
             if (distanceToPlayer > stoppingDistance + 1)
@@ -122,7 +122,7 @@ public class EnemyAI : MonoBehaviour
         agent.speed = enemySpeed;
 
         //Move towards player
-        MoveTowardsTarget(player.position);
+        MoveTowardsTarget(playerTransform.position);
 
         //Set new stopping distance
         if (canSetStopDist) SetStoppingDistance();
@@ -144,10 +144,10 @@ public class EnemyAI : MonoBehaviour
     {
         //Set movement information
         agent.isStopped = false;
-        agent.speed = enemyBackupSpeed;
+        agent.speed = enemyBackingSpeed;
 
         //Move away from player
-        Vector3 moveBackwards = Vector3.MoveTowards(transform.position, player.position, -agent.speed);
+        Vector3 moveBackwards = Vector3.MoveTowards(transform.position, playerTransform.position, -agent.speed);
         MoveTowardsTarget(moveBackwards);
 
         canSetStopDist = true;

@@ -1184,6 +1184,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1339758669}
+    - target: {fileID: 5109855730298258161, guid: a3a0621d254a66141803d9125983f295, type: 3}
+      propertyPath: enemyBackupSpeed
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5109855730298258163, guid: a3a0621d254a66141803d9125983f295, type: 3}
       propertyPath: m_RootOrder
       value: 5

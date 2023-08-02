@@ -208,7 +208,7 @@ public class Movement : MonoBehaviour
         {
             rb.velocity = Vector3.zero;
             animator.SetBool(isRollingHash, true);
-            playerBody.GetComponent<PlayerLookAtMouse>().enabled = false;
+            playerBody.GetComponent<PlayerLook>().enabled = false;
 
             playerBodyTransform.rotation = Quaternion.Slerp(playerBodyTransform.rotation, Quaternion.LookRotation(rollDirection), 0.2f);
 
@@ -316,7 +316,7 @@ public class Movement : MonoBehaviour
 
     void EnableLookScript()
     {
-        playerBody.GetComponent<PlayerLookAtMouse>().enabled = true;
+        playerBody.GetComponent<PlayerLook>().enabled = true;
     }
 
 

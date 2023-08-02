@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-    public class PlayerLookAtMouse : MonoBehaviour
+    public class PlayerLook : MonoBehaviour
     {
         [SerializeField] private LayerMask groundMask;
 

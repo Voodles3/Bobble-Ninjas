@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DamageScript : MonoBehaviour
+public class TakeDamage : MonoBehaviour
 {
     public float health = 5f;
     Animator animator;

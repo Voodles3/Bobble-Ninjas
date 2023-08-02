@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerAttackScript : MonoBehaviour
+public class PlayerAttack : MonoBehaviour
 {
     Animator animator;
     int isAttackHash;
@@ -34,6 +34,7 @@ public class PlayerAttackScript : MonoBehaviour
         
     }
 
+    //These are triggered as Animation events in the bobbleninjaplayer Animation "DiagonalSwingTRBL"
     void AllowSwinging()
     {
         //Debug.Log("Is Swinging");
