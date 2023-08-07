@@ -8,6 +8,7 @@ public class TakeDamage : MonoBehaviour
     Animator animator;
     int isDeadHash;
     
+    
 
     void Start() 
     {
@@ -19,8 +20,8 @@ public class TakeDamage : MonoBehaviour
         health -= amount;
         if(health<=0)
         {
-            //animator.SetBool(isDeadHash, true);
-            Destroy(gameObject);
+            animator.SetBool(isDeadHash, true);
+
         }
     }
 }
