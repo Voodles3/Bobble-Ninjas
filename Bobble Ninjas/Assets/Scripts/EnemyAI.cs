@@ -129,11 +129,11 @@ public class EnemyAI : MonoBehaviour
     {
         if(currentState == aiState.Idling && !attackCooldown)//if enemy is close enough to player and can attack
         {
+            attackCooldown = true;
             //wait 1 and a half seconds before attacking
             yield return new WaitForSeconds(1.5f);
             currentState = aiState.Attacking;
             //resets cooldown
-            attackCooldown = true;
             //Debug.Log("Attack!");
         }
         
@@ -198,7 +198,7 @@ public class EnemyAI : MonoBehaviour
         canSetStopDist = true;
 
         //resets attack cooldown, i put it in backing because when enemy is done with an attack he will have to back up
-        //attackCooldown = false;
+        attackCooldown = false;
 
         //Animations
         animator.SetBool(isWalkingHash, true);
