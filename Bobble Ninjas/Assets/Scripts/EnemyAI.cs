@@ -22,6 +22,7 @@ public class EnemyAI : MonoBehaviour
     public float[] stopDistances = {10f, 12f, 14f, 16f};
     bool canSetStopDist = true;
     public float attackDistance = 2f;
+    public float cancelAttackDistance = 14f;
 
     [Header("Distance To Player")]
     public float distanceToPlayer;
@@ -80,21 +81,23 @@ public class EnemyAI : MonoBehaviour
             //Find the distance between the enemy and the player
             distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
 
-            //Set enemy AI state based on enemy's distance from the player
-            if (distanceToPlayer > stoppingDistance + 1)
+            if(currentState != aiState.Attacking)
             {
-                currentState = aiState.Chasing;
-            }
-            else if (Mathf.Abs(distanceToPlayer - stoppingDistance) < 1f)
-            {
-                currentState = aiState.Idling;
-                StartCoroutine(DelayAndAttack());
-            }
-            else if (distanceToPlayer < stoppingDistance - 1)
-            {
+                //Set enemy AI state based on enemy's distance from the player
+                if (distanceToPlayer > stoppingDistance + 1)
+                {
+                    currentState = aiState.Chasing;
+                }
+                else if (Mathf.Abs(distanceToPlayer - stoppingDistance) < 1f)
+                {
+                    currentState = aiState.Idling;
+                    StartCoroutine(DelayAndAttack());
+                }
+                else if (distanceToPlayer < stoppingDistance - 1)
+                {
                 currentState = aiState.Backing;
+                }
             }
-            
         }
     }
 
@@ -169,9 +172,22 @@ public class EnemyAI : MonoBehaviour
         //the enemy has to be able to move in close to player without going in idle state
         if (canSetStopDist) SetStoppingDistance();
 
+        if(distanceToPlayer > cancelAttackDistance)
+        {
+            currentState = aiState.Chasing;
+        }
+
         //Animations
         animator.SetBool(isWalkingHash, true);
-        animator.SetBool(attack1Hash, true);
+        if(distanceToPlayer <= attackDistance)
+        {
+            animator.SetBool(attack1Hash, true);
+            currentState = aiState.Idling;
+        }
+        else
+        {
+            animator.SetBool(attack1Hash, false);
+        }
     }
 
     void Idling()

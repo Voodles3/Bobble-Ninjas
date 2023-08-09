@@ -153,6 +153,8 @@ GameObject:
   - component: {fileID: 5109855730298258160}
   - component: {fileID: 5109855730298258161}
   - component: {fileID: 5109855730298258162}
+  - component: {fileID: 1547566186}
+  - component: {fileID: 1547566187}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -210,15 +212,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b60c0e743622fa343bcbede93fe6e4ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  playerTransform: {fileID: 0}
   enemySpeed: 6
-  enemyBackupSpeed: 6
+  enemyBackingSpeed: 6
+  enemyAttackSpeed: 10
   stoppingDistance: 10
   stopDistances:
   - 10
   - 12
   - 14
   - 16
+  attackDistance: 3.5
   distanceToPlayer: 0
   AIStateUpdatePeriod: 0.1
   currentState: 0
@@ -237,6 +241,33 @@ MonoBehaviour:
   direction: {x: 0, y: 0, z: 0}
   playerPosition: {x: 0, y: 0, z: 0}
   player: {fileID: 0}
+--- !u!136 &1547566186
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5109855730298258158}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 3
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.5, z: 0}
+--- !u!114 &1547566187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5109855730298258158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41e4de449b4548f458004c7a949af150, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 1
 --- !u!1 &5792478898439564886
 GameObject:
   m_ObjectHideFlags: 0

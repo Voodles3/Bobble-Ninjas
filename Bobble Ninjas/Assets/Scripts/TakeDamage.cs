@@ -9,10 +9,12 @@ public class TakeDamage : MonoBehaviour
     int isDeadHash;
     private EnemyAI aiScript;
     private EnemyLook lookScript;
+    private Collider enemyCollider;
     
 
     void Start() 
     {
+        enemyCollider = GetComponent<CapsuleCollider>();
         animator = GetComponentInChildren<Animator>();
         aiScript = GetComponent<EnemyAI>();
         lookScript = GetComponent<EnemyLook>();
@@ -26,6 +28,7 @@ public class TakeDamage : MonoBehaviour
             animator.SetBool(isDeadHash, true);
             aiScript.enabled = false;
             lookScript.enabled = false;
+            enemyCollider.enabled = false;
         }
     }
 }
