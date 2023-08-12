@@ -21,7 +21,7 @@ public class EnemyAI : MonoBehaviour
     public float stoppingDistance = 10f;
     public float[] stopDistances = {10f, 12f, 14f, 16f};
     bool canSetStopDist = true;
-    public float attackDistance = 2f;
+    public float attackDistance = 4f;
     public float cancelAttackDistance = 14f;
 
     [Header("Distance To Player")]
@@ -195,12 +195,14 @@ public class EnemyAI : MonoBehaviour
         if(distanceToPlayer <= attackDistance)
         {
             animator.SetBool(attack1Hash, true);
+            agent.isStopped = true;
             //currentState = aiState.Idling;
             canSetAiState = true;
         }
         else
         {
             animator.SetBool(attack1Hash, false);
+            agent.isStopped = false;
         }
 
     }

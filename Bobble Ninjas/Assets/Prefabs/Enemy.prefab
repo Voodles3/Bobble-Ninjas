@@ -222,10 +222,13 @@ MonoBehaviour:
   - 12
   - 14
   - 16
-  attackDistance: 3.5
+  attackDistance: 5
+  cancelAttackDistance: 14
   distanceToPlayer: 0
   AIStateUpdatePeriod: 0.1
   currentState: 0
+  canAttack: 1
+  canSetAiState: 1
 --- !u!114 &5109855730298258162
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -22,6 +22,7 @@ public class Movement : MonoBehaviour
     Animator animator;
     int isWalkingHash;
     int isRollingHash;
+    int isDefendingHash;
 
     [Header("-=-Movement-=-")]
     public float walkSpeed = 5f;
@@ -85,6 +86,8 @@ public class Movement : MonoBehaviour
         animator = bobbleninja.GetComponent<Animator>();
         isWalkingHash = Animator.StringToHash("isWalking");
         isRollingHash = Animator.StringToHash("isRolling");
+        isDefendingHash = Animator.StringToHash("isDefending");
+
     }
 
     void Update()
@@ -251,7 +254,11 @@ public class Movement : MonoBehaviour
     {
         if (blocking)
         {
-
+            animator.SetBool(isDefendingHash, true);
+        }
+        else
+        {
+            animator.SetBool(isDefendingHash, false);
         }
     }
 
