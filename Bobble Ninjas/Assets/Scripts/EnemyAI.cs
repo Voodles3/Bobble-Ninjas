@@ -67,7 +67,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (currentState != aiState.Idling)
         {
-            CancelInvoke(nameof(StartAttackCoroutine));
+            CancelInvoke(nameof(StartAttackCycle));
         }
     }
 
@@ -135,13 +135,11 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    IEnumerator AttackCycle()
+    void AttackCycle()
     {
         if(currentState == aiState.Idling && canAttack)//if enemy is close enough to player and can attack
         {
             canAttack = false;
-
-            yield return new WaitForSeconds(0f);
 
             if (currentState == aiState.Idling)
             {
@@ -222,12 +220,12 @@ public class EnemyAI : MonoBehaviour
 
     void BeginAttack()
     {
-        Invoke(nameof(StartAttackCoroutine), 1.5f);
+        Invoke(nameof(StartAttackCycle), 1.5f);
     }
 
-    void StartAttackCoroutine()
+    void StartAttackCycle()
     {
-        StartCoroutine(AttackCycle());
+        AttackCycle();
     }
 
     void Backing()
