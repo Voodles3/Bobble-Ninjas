@@ -36,8 +36,8 @@ public class EnemyAI : MonoBehaviour
     public enum aiState{Chasing, Idling, Circling, Backing, Attacking, Stunned};
     
     [Header("Other")]
-    //attack cooldown so coroutine gets called only once
-    bool attackCooldown;
+    public bool canAttack = true;
+    public bool canSetAiState = true;
 
     void Start()
     {
@@ -52,15 +52,23 @@ public class EnemyAI : MonoBehaviour
 
         //Miscellaneous
         agent.updateRotation = false;
-
         //Set Initial AI State
-        currentState = aiState.Idling;
+        currentState = aiState.Chasing;
     }
 
     void Update()
     {
         AIStateUpdateClock();
         HandleAIState();
+        CheckStayingInIdle();
+    }
+
+    void CheckStayingInIdle()
+    {
+        if (currentState != aiState.Idling)
+        {
+            CancelInvoke(nameof(StartAttackCoroutine));
+        }
     }
 
     void AIStateUpdateClock()
@@ -81,7 +89,7 @@ public class EnemyAI : MonoBehaviour
             //Find the distance between the enemy and the player
             distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
 
-            if(currentState != aiState.Attacking)
+            if(canSetAiState)
             {
                 //Set enemy AI state based on enemy's distance from the player
                 if (distanceToPlayer > stoppingDistance + 1)
@@ -91,11 +99,10 @@ public class EnemyAI : MonoBehaviour
                 else if (Mathf.Abs(distanceToPlayer - stoppingDistance) < 1f)
                 {
                     currentState = aiState.Idling;
-                    StartCoroutine(DelayAndAttack());
                 }
                 else if (distanceToPlayer < stoppingDistance - 1)
                 {
-                currentState = aiState.Backing;
+                    currentState = aiState.Backing;
                 }
             }
         }
@@ -128,16 +135,20 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    IEnumerator DelayAndAttack()
+    IEnumerator AttackCycle()
     {
-        if(currentState == aiState.Idling && !attackCooldown)//if enemy is close enough to player and can attack
+        if(currentState == aiState.Idling && canAttack)//if enemy is close enough to player and can attack
         {
-            attackCooldown = true;
-            //wait 1 and a half seconds before attacking
-            yield return new WaitForSeconds(1.5f);
-            currentState = aiState.Attacking;
-            //resets cooldown
-            //Debug.Log("Attack!");
+            canAttack = false;
+
+            yield return new WaitForSeconds(0f);
+
+            if (currentState == aiState.Idling)
+            {
+                currentState = aiState.Attacking;
+            }
+
+            Debug.Log("Attack!");
         }
         
     }
@@ -161,6 +172,8 @@ public class EnemyAI : MonoBehaviour
 
     void Attacking()
     {
+        canSetAiState = false;
+
         //Set movement information
         agent.isStopped = false;
         agent.speed = enemyAttackSpeed;
@@ -175,19 +188,23 @@ public class EnemyAI : MonoBehaviour
         if(distanceToPlayer > cancelAttackDistance)
         {
             currentState = aiState.Chasing;
+            canSetAiState = true;
         }
 
         //Animations
         animator.SetBool(isWalkingHash, true);
+
         if(distanceToPlayer <= attackDistance)
         {
             animator.SetBool(attack1Hash, true);
-            currentState = aiState.Idling;
+            //currentState = aiState.Idling;
+            canSetAiState = true;
         }
         else
         {
             animator.SetBool(attack1Hash, false);
         }
+
     }
 
     void Idling()
@@ -195,10 +212,22 @@ public class EnemyAI : MonoBehaviour
         //Set movement information
         agent.isStopped = true;
 
+        canAttack = true;
+        BeginAttack();
 
         //Animations
         animator.SetBool(isWalkingHash, false);
         animator.SetBool(attack1Hash, false);
+    }
+
+    void BeginAttack()
+    {
+        Invoke(nameof(StartAttackCoroutine), 1.5f);
+    }
+
+    void StartAttackCoroutine()
+    {
+        StartCoroutine(AttackCycle());
     }
 
     void Backing()
@@ -214,7 +243,7 @@ public class EnemyAI : MonoBehaviour
         canSetStopDist = true;
 
         //resets attack cooldown, i put it in backing because when enemy is done with an attack he will have to back up
-        attackCooldown = false;
+        canAttack = true;
 
         //Animations
         animator.SetBool(isWalkingHash, true);
