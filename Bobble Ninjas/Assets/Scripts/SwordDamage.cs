@@ -7,11 +7,6 @@ public class SwordDamage : MonoBehaviour
     public PlayerAttack attackScript;
     public float damage = 1;
 
-    void Start()
-    {
-        
-    }
-
     void FixedUpdate()
     {
         attackScript = FindObjectOfType<PlayerAttack>();
@@ -21,11 +16,11 @@ public class SwordDamage : MonoBehaviour
     {
         if(attackScript.isSwinging) 
         {
-            TakeDamage takeDmgScript = other.GetComponent<TakeDamage>();
+            EnemyDamaged enemyDmgScript = other.GetComponent<EnemyDamaged>();
 
-            if(takeDmgScript != null)
+            if(enemyDmgScript != null)
             {
-                takeDmgScript.Damaged(damage);
+                enemyDmgScript.Damaged(damage);
             }
         }
     }

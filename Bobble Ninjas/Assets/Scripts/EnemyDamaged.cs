@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TakeDamage : MonoBehaviour
+public class EnemyDamaged : MonoBehaviour
 {
     public float health = 5f;
     Animator animator;
@@ -23,7 +23,7 @@ public class TakeDamage : MonoBehaviour
     public void Damaged(float amount)
     {
         health -= amount;
-        if(health<=0)
+        if (health <= 0)
         {
             animator.SetBool(isDeadHash, true);
             aiScript.enabled = false;
