@@ -194,7 +194,7 @@ NavMeshAgent:
   m_AngularSpeed: 10000
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 4
   m_BaseOffset: 0
@@ -213,6 +213,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 0}
+  agent: {fileID: 0}
   enemySpeed: 6
   enemyBackingSpeed: 6
   enemyAttackSpeed: 10
@@ -222,13 +223,16 @@ MonoBehaviour:
   - 12
   - 14
   - 16
-  attackDistance: 5
+  attackDistance: 4.5
   cancelAttackDistance: 14
   distanceToPlayer: 0
   AIStateUpdatePeriod: 0.1
   currentState: 0
+  enemyDamagedScript: {fileID: 0}
   canAttack: 1
   canSetAiState: 1
+  isCurrentlyTargetingPlayer: 0
+  lastCheckForTarget: 0
 --- !u!114 &5109855730298258162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -271,6 +275,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 1
+  isDead: 0
 --- !u!1 &5792478898439564886
 GameObject:
   m_ObjectHideFlags: 0

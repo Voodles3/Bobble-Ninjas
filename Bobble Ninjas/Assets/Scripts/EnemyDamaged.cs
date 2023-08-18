@@ -10,6 +10,8 @@ public class EnemyDamaged : MonoBehaviour
     private EnemyAI aiScript;
     private EnemyLook lookScript;
     private Collider enemyCollider;
+
+    public bool isDead;
     
 
     void Start() 
@@ -25,6 +27,8 @@ public class EnemyDamaged : MonoBehaviour
         health -= amount;
         if (health <= 0)
         {
+            isDead = true;
+
             animator.SetBool(isDeadHash, true);
             aiScript.enabled = false;
             lookScript.enabled = false;

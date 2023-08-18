@@ -1,11 +1,13 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.AI;
+
+[DefaultExecutionOrder(1)]
 public class EnemyAI : MonoBehaviour
 {
     [Header("References")]
     public Transform playerTransform;
-    NavMeshAgent agent;
+    public NavMeshAgent agent;
 
     [Header("Animations")]
     Animator animator;
@@ -33,18 +35,32 @@ public class EnemyAI : MonoBehaviour
 
     [Header("Enemy AI States")]
     public aiState currentState;
-    public enum aiState{Chasing, Idling, Circling, Backing, Attacking, Stunned};
+    public enum aiState{Chasing, Idling, Circling, Backing, Attacking, Stunned, Unaware};
     
     [Header("Other")]
+    private EnemyLook lookScript;
+    private EnemyHandler enemyHandlerScript;
+    public EnemyDamaged enemyDamagedScript;
+
     public bool canAttack = true;
     public bool canSetAiState = true;
+    public bool isCurrentlyTargetingPlayer;
+    public bool lastCheckForTarget;
+
+    void Awake()
+    {
+        agent = GetComponent<NavMeshAgent>();
+        EnemyHandler.Instance.EnemyAiScriptInstances.Add(this);
+    }
 
     void Start()
     {
         //References
-        agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
         playerTransform = GameObject.Find("Player").transform;
+        lookScript = GetComponent<EnemyLook>();
+        enemyHandlerScript = GameObject.Find("Enemy Handler").GetComponent<EnemyHandler>();
+        enemyDamagedScript = GetComponent<EnemyDamaged>();
 
         //Animations
         isWalkingHash = Animator.StringToHash("isWalking");
@@ -56,18 +72,57 @@ public class EnemyAI : MonoBehaviour
         currentState = aiState.Chasing;
     }
 
+
     void Update()
     {
         AIStateUpdateClock();
         HandleAIState();
         CheckStayingInIdle();
+        //CheckTargetStatus();
+        DebugKeys();
+    }
+
+    void DebugKeys()
+    {
+        if (Input.GetKey(KeyCode.G))
+        {
+            currentState = aiState.Unaware;
+        }
+        else
+        {
+            lookScript.enabled = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            canSetAiState = !canSetAiState; 
+        }
     }
 
     void CheckStayingInIdle()
     {
-        if (currentState != aiState.Idling)
+        if (Mathf.Abs(distanceToPlayer - stoppingDistance) >= 5)
         {
             CancelInvoke(nameof(StartAttackCycle));
+        }
+    }
+
+    void CheckTargetStatus()
+    {
+        if (isCurrentlyTargetingPlayer != lastCheckForTarget)
+        {
+            lastCheckForTarget = isCurrentlyTargetingPlayer;
+
+            if (isCurrentlyTargetingPlayer == true)
+            {
+                enemyHandlerScript.activeEnemyCount++;
+            }
+            else
+            {
+                enemyHandlerScript.activeEnemyCount--;
+            }
+
+            Debug.Log("Changed!");
         }
     }
 
@@ -92,15 +147,15 @@ public class EnemyAI : MonoBehaviour
             if(canSetAiState)
             {
                 //Set enemy AI state based on enemy's distance from the player
-                if (distanceToPlayer > stoppingDistance + 1)
+                if (distanceToPlayer > stoppingDistance + 2)
                 {
                     currentState = aiState.Chasing;
                 }
-                else if (Mathf.Abs(distanceToPlayer - stoppingDistance) < 1f)
+                else if (Mathf.Abs(distanceToPlayer - stoppingDistance) < 2)
                 {
                     currentState = aiState.Idling;
                 }
-                else if (distanceToPlayer < stoppingDistance - 1)
+                else if (distanceToPlayer < stoppingDistance - 2)
                 {
                     currentState = aiState.Backing;
                 }
@@ -132,6 +187,10 @@ public class EnemyAI : MonoBehaviour
             case aiState.Stunned:
                 //Call Stunned method
                 break;
+
+            case aiState.Unaware:
+                Unaware();
+                break;
         }
     }
 
@@ -141,25 +200,35 @@ public class EnemyAI : MonoBehaviour
         {
             canAttack = false;
 
-            if (currentState == aiState.Idling)
-            {
-                currentState = aiState.Attacking;
-            }
-
-            Debug.Log("Attack!");
+            currentState = aiState.Attacking;
         }
-        
+    }
+
+    void Unaware()
+    {
+        isCurrentlyTargetingPlayer = false;
+
+        //Set movement information
+        agent.isStopped = true;
+
+        //Animations
+        animator.SetBool(isWalkingHash, true);
+        animator.SetBool(attack1Hash, false);
+
+        lookScript.enabled = false;
     }
 
     void Chasing()
     {
+        isCurrentlyTargetingPlayer = true;
+
         //Set movement information
         agent.isStopped = false;
         agent.speed = enemySpeed;
 
         //Move towards player
-        MoveTowardsTarget(playerTransform.position);
-
+        enemyHandlerScript.MoveTowardsCircularPositionAroundTarget();
+        
         //Set new stopping distance
         if (canSetStopDist) SetStoppingDistance();
 
@@ -170,6 +239,8 @@ public class EnemyAI : MonoBehaviour
 
     void Attacking()
     {
+        isCurrentlyTargetingPlayer = true;
+
         canSetAiState = false;
 
         //Set movement information
@@ -180,7 +251,6 @@ public class EnemyAI : MonoBehaviour
         MoveTowardsTarget(playerTransform.position);
 
         //Set new stopping distance
-        //the enemy has to be able to move in close to player without going in idle state
         if (canSetStopDist) SetStoppingDistance();
 
         if(distanceToPlayer > cancelAttackDistance)
@@ -192,23 +262,23 @@ public class EnemyAI : MonoBehaviour
         //Animations
         animator.SetBool(isWalkingHash, true);
 
-        if(distanceToPlayer <= attackDistance)
+        if (distanceToPlayer <= attackDistance)
         {
-            animator.SetBool(attack1Hash, true);
-            agent.isStopped = true;
-            //currentState = aiState.Idling;
-            canSetAiState = true;
+            Attack();
         }
-        else
-        {
-            animator.SetBool(attack1Hash, false);
-            agent.isStopped = false;
-        }
+    }
 
+    void Attack()
+    {
+        animator.SetBool(attack1Hash, true);
+        agent.isStopped = true;
+        canSetAiState = true;
     }
 
     void Idling()
     {
+        isCurrentlyTargetingPlayer = true;
+
         //Set movement information
         agent.isStopped = true;
 
@@ -232,6 +302,8 @@ public class EnemyAI : MonoBehaviour
 
     void Backing()
     {
+        isCurrentlyTargetingPlayer = true;
+
         //Set movement information
         agent.isStopped = false;
         agent.speed = enemyBackingSpeed;
@@ -250,9 +322,8 @@ public class EnemyAI : MonoBehaviour
         animator.SetBool(attack1Hash, false);
     }
 
-    void MoveTowardsTarget(Vector3 targetPosition)
+    public void MoveTowardsTarget(Vector3 targetPosition)
     {
-        //Move towards target
         agent.SetDestination(targetPosition);
     }
 
@@ -261,7 +332,7 @@ public class EnemyAI : MonoBehaviour
         canSetStopDist = false;
 
         //Set stopping distance
-        stoppingDistance = 8;
+        stoppingDistance = 10;
         //stoppingDistance = stopDistances[Random.Range(0, stopDistances.Length)];
     }
 }
