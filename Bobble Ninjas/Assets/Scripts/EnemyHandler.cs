@@ -27,19 +27,16 @@ public class EnemyHandler : MonoBehaviour
     }
 
     public int activeEnemyCount = 0;
-    bool haveShuffled = false;
-    int enemiesChasing = 0;
+    public bool canShuffle = false;
 
     public Transform playerTransform;
     EnemyAI enemyAIScript;
-    //EnemyDamaged enemyDamagedScript;
 
 
     void Start()
     {
         playerTransform = GameObject.Find("Player").transform;
         enemyAIScript = GameObject.FindWithTag("Enemy").GetComponent<EnemyAI>();
-        //enemyDamagedScript = GameObject.FindWithTag("Enemy").GetComponent<EnemyDamaged>();
     }
 
     void Update()
@@ -58,26 +55,30 @@ public class EnemyHandler : MonoBehaviour
             }
         }
 
-        /*for (int i = 0; i < EnemyAiScriptInstances.Count; i++)
+        for (int i = 0; i < EnemyAiScriptInstances.Count; i++)
         {
-            if (EnemyAiScriptInstances[i].currentState == EnemyAI.aiState.Chasing)
+            if (EnemyAiScriptInstances[i].agent.remainingDistance >= 5 && EnemyAiScriptInstances[i].currentState == EnemyAI.aiState.Chasing)
             {
-                enemiesChasing++;
+                if (!EnemiesReadyToShuffle.Contains(EnemyAiScriptInstances[i])) { EnemiesReadyToShuffle.Add(EnemyAiScriptInstances[i]); }
             }
             else
             {
-                enemiesChasing = 0;
+                EnemiesReadyToShuffle.Remove(EnemyAiScriptInstances[i]);
+            }
+
+            if (EnemiesReadyToShuffle.Count == EnemyAiScriptInstances.Count && canShuffle)
+            {
+                canShuffle = false;
+                Shuffle(EnemyAiScriptInstances);
+                Debug.Log("Shuffling.");
+            }
+            else if (EnemiesReadyToShuffle.Count <= EnemyAiScriptInstances.Count / 2)
+            {
+                canShuffle = true;
             }
         }
-        if (enemiesChasing >= EnemyAiScriptInstances.Count)
-        {
-            enemiesChasing = 0;
-            //Shuffle(EnemyAiScriptInstances);
-            //Debug.Log("Shuffling!");
-        }
-        else {enemiesChasing = 0;}*/
 
-        if (enemyAIScript.currentState == EnemyAI.aiState.Chasing && !haveShuffled)
+        /*if (enemyAIScript.currentState == EnemyAI.aiState.Chasing && !haveShuffled)
         {
             haveShuffled = true;
             Shuffle(EnemyAiScriptInstances);
@@ -86,7 +87,7 @@ public class EnemyHandler : MonoBehaviour
         else if (enemyAIScript.currentState != EnemyAI.aiState.Chasing)
         {
             haveShuffled = false;
-        }
+        }*/
 
     }
 
@@ -102,14 +103,19 @@ public class EnemyHandler : MonoBehaviour
     }
 
     public List<EnemyAI> EnemyAiScriptInstances = new List<EnemyAI>();
-    public float radiusAroundTarget = 20f;
+    public List<EnemyAI> EnemiesReadyToShuffle = new List<EnemyAI>();
+    public float radiusAroundTarget;
 
     public void MoveTowardsCircularPositionAroundTarget()
     {
         radiusAroundTarget = enemyAIScript.stoppingDistance;
 
 
-        if (EnemyAiScriptInstances.Count <= 1) {enemyAIScript.MoveTowardsTarget(playerTransform.position);}
+        if (EnemyAiScriptInstances.Count <= 1) 
+        {
+            enemyAIScript.MoveTowardsTarget(playerTransform.position);
+            enemyAIScript.canSetAiState = true;
+        }
         else 
         {
             //List<EnemyAI> SortedEnemies = Enemies.OrderBy(x => x.distanceToPlayer).ToList();
@@ -131,7 +137,6 @@ public class EnemyHandler : MonoBehaviour
                 else
                 {
                     EnemyAiScriptInstances[i].canSetAiState = false;
-                    EnemyAiScriptInstances[i].currentState = EnemyAI.aiState.Chasing;
                 }
             }
         }

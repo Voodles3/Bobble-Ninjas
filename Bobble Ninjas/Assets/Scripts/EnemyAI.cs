@@ -18,16 +18,18 @@ public class EnemyAI : MonoBehaviour
     public float enemySpeed = 6f;
     public float enemyBackingSpeed = 6f;
     public float enemyAttackSpeed = 10f;
+    public float distanceToPlayer;
+
+    [Header("Enemy Attacking")]
+    public bool canAttack = true;
+    public bool canSetAiState = true;
+    public float attackDistance = 4f;
+    public float abortAttackDistance = 14f;
 
     [Header("Stopping Distances")]
     public float stoppingDistance = 10f;
     public float[] stopDistances = {10f, 12f, 14f, 16f};
     bool canSetStopDist = true;
-    public float attackDistance = 4f;
-    public float cancelAttackDistance = 14f;
-
-    [Header("Distance To Player")]
-    public float distanceToPlayer;
 
     [Header("AI State Update Frequency")]
     public float AIStateUpdatePeriod = 0.1f;
@@ -40,10 +42,8 @@ public class EnemyAI : MonoBehaviour
     [Header("Other")]
     private EnemyLook lookScript;
     private EnemyHandler enemyHandlerScript;
-    public EnemyDamaged enemyDamagedScript;
+    [HideInInspector] public EnemyDamaged enemyDamagedScript;
 
-    public bool canAttack = true;
-    public bool canSetAiState = true;
     public bool isCurrentlyTargetingPlayer;
     public bool lastCheckForTarget;
 
@@ -68,6 +68,7 @@ public class EnemyAI : MonoBehaviour
 
         //Miscellaneous
         agent.updateRotation = false;
+
         //Set Initial AI State
         currentState = aiState.Chasing;
     }
@@ -77,8 +78,7 @@ public class EnemyAI : MonoBehaviour
     {
         AIStateUpdateClock();
         HandleAIState();
-        CheckStayingInIdle();
-        //CheckTargetStatus();
+        CheckIfCanStillAttack();
         DebugKeys();
     }
 
@@ -96,33 +96,6 @@ public class EnemyAI : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.H))
         {
             canSetAiState = !canSetAiState; 
-        }
-    }
-
-    void CheckStayingInIdle()
-    {
-        if (Mathf.Abs(distanceToPlayer - stoppingDistance) >= 5)
-        {
-            CancelInvoke(nameof(StartAttackCycle));
-        }
-    }
-
-    void CheckTargetStatus()
-    {
-        if (isCurrentlyTargetingPlayer != lastCheckForTarget)
-        {
-            lastCheckForTarget = isCurrentlyTargetingPlayer;
-
-            if (isCurrentlyTargetingPlayer == true)
-            {
-                enemyHandlerScript.activeEnemyCount++;
-            }
-            else
-            {
-                enemyHandlerScript.activeEnemyCount--;
-            }
-
-            Debug.Log("Changed!");
         }
     }
 
@@ -151,7 +124,7 @@ public class EnemyAI : MonoBehaviour
                 {
                     currentState = aiState.Chasing;
                 }
-                else if (Mathf.Abs(distanceToPlayer - stoppingDistance) < 2)
+                else if (Mathf.Abs(distanceToPlayer - stoppingDistance) <= 2)
                 {
                     currentState = aiState.Idling;
                 }
@@ -194,16 +167,6 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    void AttackCycle()
-    {
-        if(currentState == aiState.Idling && canAttack)//if enemy is close enough to player and can attack
-        {
-            canAttack = false;
-
-            currentState = aiState.Attacking;
-        }
-    }
-
     void Unaware()
     {
         isCurrentlyTargetingPlayer = false;
@@ -237,11 +200,51 @@ public class EnemyAI : MonoBehaviour
         animator.SetBool(attack1Hash, false);
     }
 
+    void Idling()
+    {
+        isCurrentlyTargetingPlayer = true;
+
+        canSetAiState = true;
+
+        //Set movement information
+        agent.isStopped = true;
+
+        canAttack = true;
+
+        //Begin attack
+        Invoke(nameof(SetAIStateToAttacking), 1.5f);
+
+        //Animations
+        animator.SetBool(isWalkingHash, false);
+        animator.SetBool(attack1Hash, false);
+    }
+
+    void CheckIfCanStillAttack()
+    {
+        if (Mathf.Abs(distanceToPlayer - stoppingDistance) >= 5)
+        {
+            CancelInvoke(nameof(SetAIStateToAttacking));
+        }
+    }
+
+    void SetAIStateToAttacking()
+    {
+        if(currentState == aiState.Idling && canAttack)//if enemy is close enough to player and can attack
+        {
+            currentState = aiState.Attacking;
+            canAttack = false;
+            canSetAiState = false;
+        }
+        else
+        {
+            
+        }
+    }
+
     void Attacking()
     {
         isCurrentlyTargetingPlayer = true;
 
-        canSetAiState = false;
 
         //Set movement information
         agent.isStopped = false;
@@ -250,54 +253,21 @@ public class EnemyAI : MonoBehaviour
         //Move towards player
         MoveTowardsTarget(playerTransform.position);
 
-        //Set new stopping distance
-        if (canSetStopDist) SetStoppingDistance();
-
-        if(distanceToPlayer > cancelAttackDistance)
+        if(distanceToPlayer >= abortAttackDistance)
         {
             currentState = aiState.Chasing;
+        }
+
+        if (distanceToPlayer <= attackDistance)
+        {
+            //Attack
+            agent.isStopped = true;
+            animator.SetBool(attack1Hash, true);
             canSetAiState = true;
         }
 
         //Animations
         animator.SetBool(isWalkingHash, true);
-
-        if (distanceToPlayer <= attackDistance)
-        {
-            Attack();
-        }
-    }
-
-    void Attack()
-    {
-        animator.SetBool(attack1Hash, true);
-        agent.isStopped = true;
-        canSetAiState = true;
-    }
-
-    void Idling()
-    {
-        isCurrentlyTargetingPlayer = true;
-
-        //Set movement information
-        agent.isStopped = true;
-
-        canAttack = true;
-        BeginAttack();
-
-        //Animations
-        animator.SetBool(isWalkingHash, false);
-        animator.SetBool(attack1Hash, false);
-    }
-
-    void BeginAttack()
-    {
-        Invoke(nameof(StartAttackCycle), 1.5f);
-    }
-
-    void StartAttackCycle()
-    {
-        AttackCycle();
     }
 
     void Backing()
@@ -314,7 +284,6 @@ public class EnemyAI : MonoBehaviour
 
         canSetStopDist = true;
 
-        //resets attack cooldown, i put it in backing because when enemy is done with an attack he will have to back up
         canAttack = true;
 
         //Animations
