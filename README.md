@@ -1,2 +1,2 @@
 # Bobble-Ninjas
-Bobbly wobbly
+3D Ninja swordfighting game made in unity
